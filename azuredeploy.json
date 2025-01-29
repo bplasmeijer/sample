@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "bicepFile": {
+      "type": "string",
+      "defaultValue": "src/main.bicep",
+      "metadata": {
+        "description": "The path to the Bicep file to deploy."
+      }
+    },
+    "aksClusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the AKS cluster."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location for the AKS cluster."
+      }
+    },
+    "nodeSku": {
+      "type": "string",
+      "metadata": {
+        "description": "The SKU for the AKS node pools."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "aksDeployment",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, 'src/modules/aks.bicep')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "aksClusterName": {
+            "value": "[parameters('aksClusterName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "nodeSku": {
+            "value": "[parameters('nodeSku')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "bicepDeploymentOutput": {
+      "type": "string",
+      "value": "[concat('Bicep deployment initiated for: ', parameters('bicepFile'))]"
+    }
+  }
+}
