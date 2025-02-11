@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app3-deployment
+  labels:
+    app: app3
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app3-app
+  template:
+    metadata:
+      labels:
+        app: app3-app
+    spec:
+      containers:
+        - name: app3-container
+          image: /app3:latest
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "100m"
+              cpu: "500m"
+            requests:
+              memory: "100m"
+              cpu: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app3-service
+spec:
+  selector:
+    app: app3-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app3-ingress
+spec:
+  rules:
+  - host: app3_example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app3-service
+            port:
+              number: 80
