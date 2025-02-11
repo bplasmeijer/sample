@@ -45,29 +45,11 @@ jobs:
     - name: Deploy applications
       run: bash ./deploy.sh
 
-    - name: set username and emaim
-      run: |
-        git config --global user.email "${{ secrets.USER_EMAIL }}"
-        git config --global user.name "${{ secrets.DOCKER_USERNAME }}"
-
-    - name: create new brach
-      run: |
-        git checkout -b ${{ github.run_id }}
-        git add .
-        git commit -m "Deployed applications"
-        git push origin ${{ github.run_id }}
-
-    - name: switch to branch
-      run: |
-        git checkout ${{ github.run_id }}
-        git push origin ${{ github.run_id }}
-
-    - name: check-in manifest folder
-      run: |
-        git add .
-        git commit -m "Deployed applications"
-        git push origin ${{ github.run_id }}
-
-    - name: create PR
-      run: |
-        gh pr create --title "Deployed applications" --body "Deployed applications" --base main --head ${{ github.run_id }} 
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v7
+      with: 
+        commit-message: "Add new deployments"
+        title: "deployments-${{ github.run_id }}"
+        body: "This PR adds a new deployments"
+        branch: "deployments-${{ github.run_id }}"
+        base: "develop"
