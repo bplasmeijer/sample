@@ -1,0 +1,7 @@
+resources:
+  cpu:
+    min: 100m
+    max: 500m
+  memory:
+    min: 128Mi
+    max: 512Mi
