@@ -1,2 +1,2 @@
 /deployments/**/dockerfile
-/deployments/**/deployments.yaml
+/deployments/**/deployment.yaml
