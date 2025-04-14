@@ -1,0 +1,32 @@
+{
+    "environmentVariables": [
+        {
+            "name": "ENV_VAR_1",
+            "value": "value1"
+        },
+        {
+            "name": "ENV_VAR_2",
+            "value": "value2"
+        }
+    ],
+    "resources": {
+        "cpu": {
+            "min": "100m",
+            "max": "500m"
+        },
+        "memory": {
+            "min": "128Mi",
+            "max": "512Mi"
+        }
+    },
+    "ingress": [
+        {
+            "host": "andreas.example.com",
+            "path": "/"
+        },
+        {
+            "host": "example.org",
+            "path": "/api"
+        }
+    ]
+}
