@@ -1,0 +1,72 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"peter"},"name":"peter-deployment","namespace":"default"},"spec":{"replicas":3,"selector":{"matchLabels":{"app":"peter-app"}},"template":{"metadata":{"labels":{"app":"peter-app"}},"spec":{"containers":[{"image":"/peter:latest","name":"peter-container","ports":[{"containerPort":80}],"resources":{"limits":{"cpu":"600m","memory":"200m"},"requests":{"cpu":"128Mi","memory":"200m"}}}]}}}}
+    labels:
+      app: peter
+    name: peter-deployment
+    namespace: default
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: peter-app
+    template:
+      metadata:
+        labels:
+          app: peter-app
+      spec:
+        containers:
+        - image: /peter:latest
+          name: peter-container
+          ports:
+          - containerPort: 80
+          resources:
+            limits:
+              cpu: 600m
+              memory: 200m
+            requests:
+              cpu: 128Mi
+              memory: 200m
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"peter-service","namespace":"default"},"spec":{"ports":[{"port":80,"protocol":"TCP","targetPort":80}],"selector":{"app":"peter-app"},"type":"ClusterIP"}}
+    name: peter-service
+    namespace: default
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      app: peter-app
+    type: ClusterIP
+- apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"annotations":{},"name":"peter-ingress","namespace":"default"},"spec":{"rules":[{"host":"peter_peter.example.com","http":{"paths":[{"backend":{"service":{"name":"peter-service","port":{"number":80}}},"path":"/","pathType":"Prefix"}]}}]}}
+    name: peter-ingress
+    namespace: default
+  spec:
+    rules:
+    - host: peter_peter.example.com
+      http:
+        paths:
+        - backend:
+            service:
+              name: peter-service
+              port:
+                number: 80
+          path: /
+          pathType: Prefix
+kind: List
+metadata: {}
